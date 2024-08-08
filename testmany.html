@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HTML to JSON Converter</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+      }
+      .input-group,
+      .result-group,
+      .conversion-group {
+        width: 100%;
+      }
+      .input-group textarea,
+      .result-group textarea {
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .button-group {
+        display: flex;
+        gap: 10px;
+      }
+      .results,
+      .converted-results {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .result-item,
+      .converted-item {
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 4px;
+      }
+      .input-item {
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="input-group">
+        <label for="input">输入一组检索词:</label>
+        <textarea id="input" rows="4"></textarea>
+        <button onclick="processInput()">处理</button>
+      </div>
+      <div class="result-group">
+        <label for="results">automa获取结果:</label>
+        <div id="results" class="results">
+          <div class="result-item"></div>
+          <div class="result-item"></div>
+          <div class="result-item"></div>
+          <div class="result-item"></div>
+          <!-- 删除此处的一个 div 元素以减少一个框 -->
+          <!-- <div class="result-item"></div> -->
+        </div>
+        <label for="userInputs">用户输入:</label>
+        <div id="userInputs" class="results">
+          <div class="input-item" contenteditable="true"></div>
+          <div class="input-item" contenteditable="true"></div>
+          <div class="input-item" contenteditable="true"></div>
+          <div class="input-item" contenteditable="true"></div>
+          <!-- 删除此处的一个 div 元素以减少一个框 -->
+          <!-- <div class="input-item" contenteditable="true"></div> -->
+        </div>
+      </div>
+      <div class="conversion-group">
+        <button onclick="convertAll()">格式转换</button>
+      </div>
+    </div>
+    <script>
+      function processInput() {
+        const input = document.getElementById("input").value;
+        const results = document.querySelectorAll(".result-item");
+        const searchTerms = input
+          .split(/\s+/)
+          .filter((term) => term.trim() !== "");
+
+        results.forEach((result, index) => {
+          result.textContent = searchTerms[index] || "";
+        });
+      }
+
+      function convertAll() {
+        const inputs = document.querySelectorAll(".input-item");
+        const convertedResultsContainer =
+          document.getElementById("convertedResults");
+        let jsonResult = [];
+
+        inputs.forEach((input) => {
+          const content = input.textContent.trim();
+          if (content) {
+            const result = {
+              name: content,
+              children: null,
+              images: [],
+              videos: [],
+            };
+            jsonResult.push(result);
+          }
+        });
+
+        // Convert JSON to text format
+        const textResult = jsonResult
+          .map((result) => JSON.stringify(result))
+          .join(",\n");
+        convertedResultsContainer.value = textResult;
+      }
+
+      function copy() {
+        var output = document.getElementById("convertedResults");
+        output.select();
+        document.execCommand("copy");
+      }
+    </script>
+  </body>
+</html>
